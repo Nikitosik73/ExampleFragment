@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MyShoppingList</string>
+    <string name="add_new_shop_item">Добавление нового элемента</string>
+    <string name="edit_name">Name:</string>
+    <string name="edit_count">Count:</string>
+    <string name="btn_save">save</string>
+    <string name="error_input_name">Error input name</string>
+    <string name="error_input_count">Error input count</string>
+</resources>
