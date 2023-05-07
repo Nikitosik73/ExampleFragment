@@ -1,10 +1,9 @@
 package com.example.myshoppinglist.presentation
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,7 +13,7 @@ import com.example.myshoppinglist.databinding.ActivityMainBinding
 import com.example.myshoppinglist.presentation.adapter.ShopListAdapter
 import com.example.myshoppinglist.presentation.viewmodel.MainViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var shopAdapter: ShopListAdapter
@@ -41,6 +40,15 @@ class MainActivity : AppCompatActivity() {
                 launchScreenMode(ShopItemFragment.newInstanceAddItem())
             }
         }
+    }
+
+    override fun onEditingFinished() {
+        Toast.makeText(
+            this@MainActivity,
+            "Success",
+            Toast.LENGTH_SHORT
+        ).show()
+        supportFragmentManager.popBackStack()
     }
 
     private fun launchScreenMode(fragment: Fragment) {
