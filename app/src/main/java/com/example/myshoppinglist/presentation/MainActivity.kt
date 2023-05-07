@@ -38,17 +38,21 @@ class MainActivity : AppCompatActivity() {
                 val intent = ShopItemActivity.newIntentAddMode(this@MainActivity)
                 startActivity(intent)
             } else {
-                launchScreenMode(ShopItemFragment.newInstanceAddItem())
+                launchScreenMode(ShopItemFragment.newInstanceAddItem(), "add")
             }
         }
     }
 
-    private fun launchScreenMode(fragment: Fragment) {
-        supportFragmentManager.popBackStack() // метод который удалит фрагмент из стека
+    private fun launchScreenMode(fragment: Fragment, name: String) {
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.shop_item_container, fragment)
-            .addToBackStack(null)
+            .addToBackStack(name)
             .commit()
+    }
+
+    override fun onBackPressed() {
+        supportFragmentManager.popBackStack("add", 0)
     }
 
     private fun isOnePaneMode(): Boolean {
@@ -114,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 startActivity(intent)
             } else {
-                launchScreenMode(ShopItemFragment.newInstanceEditItem(it.id))
+                launchScreenMode(ShopItemFragment.newInstanceEditItem(it.id), "edit")
             }
         }
     }
