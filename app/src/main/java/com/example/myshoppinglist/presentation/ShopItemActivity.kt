@@ -13,7 +13,7 @@ import com.example.myshoppinglist.databinding.ActivityShopItemBinding
 import com.example.myshoppinglist.domain.ShopItem
 import com.example.myshoppinglist.presentation.viewmodel.ShopItemViewModel
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
     private lateinit var binding: ActivityShopItemBinding
 
@@ -29,6 +29,10 @@ class ShopItemActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             launchRightMode()
         }
+    }
+
+    override fun onEditingFinished() {
+        finish()
     }
 
     private fun launchRightMode() {
