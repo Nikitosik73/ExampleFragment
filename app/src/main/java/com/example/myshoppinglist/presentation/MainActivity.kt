@@ -15,9 +15,12 @@ import com.example.myshoppinglist.presentation.viewmodel.MainViewModel
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
-    private lateinit var viewModel: MainViewModel
     private lateinit var shopAdapter: ShopListAdapter
     private lateinit var binding: ActivityMainBinding
+
+    private val viewModel by lazy {
+        ViewModelProvider(this)[MainViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +28,6 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
         setContentView(binding.root)
 
         setupRecyclerView()
-
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         viewModel.shopList.observe(this) {
             Log.d("test_of_load_data", it.toString())

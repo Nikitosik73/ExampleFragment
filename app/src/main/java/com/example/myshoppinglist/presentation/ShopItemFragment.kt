@@ -20,7 +20,9 @@ class ShopItemFragment : Fragment() {
     private var _binding: FragmentShopItemBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: ShopItemViewModel
+    private val viewModel by lazy {
+        ViewModelProvider(this)[ShopItemViewModel::class.java]
+    }
 
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
@@ -28,6 +30,7 @@ class ShopItemFragment : Fragment() {
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
     override fun onAttach(context: Context) {
+        Log.d("ShopItemFragment", "onAttach")
         super.onAttach(context)
         if (context is OnEditingFinishedListener) {
             onEditingFinishedListener = context
@@ -47,23 +50,55 @@ class ShopItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("ShopItemFragment", "onCreateView")
         _binding = FragmentShopItemBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("ShopItemFragment", "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         addTextChangeListeners()
         launchRightMode()
         observeViewModel()
     }
 
+    override fun onStart() {
+        Log.d("ShopItemFragment", "onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("ShopItemFragment", "onResume")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d("ShopItemFragment", "onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("ShopItemFragment", "onStop")
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
+        Log.d("ShopItemFragment", "onDestroyView")
+        super.onDestroyView()
+    }
+
     override fun onDestroy() {
+        Log.d("ShopItemFragment", "onDestroy")
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onDetach() {
+        Log.d("ShopItemFragment", "onDetach")
+        super.onDetach()
     }
 
     private fun launchRightMode() {
@@ -75,10 +110,6 @@ class ShopItemFragment : Fragment() {
 
     private fun launchEditMode() {
         viewModel.getShopItem(shopItemId)
-        viewModel.shopItem.observe(viewLifecycleOwner) {
-            binding.editName.setText(it.name)
-            binding.editCount.setText(it.count.toString())
-        }
         binding.buttonSave.setOnClickListener {
             viewModel.editShopItem(
                 binding.editName.text?.toString(),
@@ -97,22 +128,6 @@ class ShopItemFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.errorShopName.observe(viewLifecycleOwner) {
-            val message = if (it) {
-                getString(R.string.error_input_name)
-            } else {
-                null
-            }
-            binding.tilName.error = message
-        }
-        viewModel.errorInputCount.observe(viewLifecycleOwner) {
-            val message = if (it) {
-                getString(R.string.error_input_count)
-            } else {
-                null
-            }
-            binding.tilCount.error = message
-        }
         viewModel.closeScreen.observe(viewLifecycleOwner) {
             onEditingFinishedListener.onEditingFinished()
         }
