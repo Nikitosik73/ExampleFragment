@@ -1,10 +1,7 @@
 package com.example.myshoppinglist.presentation.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.myshoppinglist.data.ShopItemRepositoryImpl
 import com.example.myshoppinglist.domain.AddShopItemUseCase
 import com.example.myshoppinglist.domain.EditShopItemUseCase
@@ -23,8 +20,6 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
     private val addShopItemUseCase = AddShopItemUseCase(repository)
     private val editShopItemUseCase = EditShopItemUseCase(repository)
 
-    private val scope = CoroutineScope(Dispatchers.IO)
-
     private val _errorInputName = MutableLiveData<Boolean>()
     val errorShopName: LiveData<Boolean>
         get() = _errorInputName
@@ -42,7 +37,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
         get() = _closeScreen
 
     fun getShopItem(shopItemId: Int) {
-        scope.launch {
+        viewModelScope.launch {
             val item = getShopItemUseCase.getShopItem(shopItemId)
             _shopItem.value = item
         }
@@ -53,7 +48,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
         val count = parseCount(inputCount)
         val fieldResult = validateField(name, count)
         if (fieldResult) {
-            scope.launch {
+            viewModelScope.launch {
                 val item = ShopItem(name, count, true)
                 addShopItemUseCase.addShopItem(item)
                 finishWork()
@@ -67,7 +62,7 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
         val fieldResult = validateField(name, count)
         if (fieldResult) {
             _shopItem.value?.let {
-                scope.launch {
+                viewModelScope.launch {
                     val item = it.copy(name = name, count = count)
                     editShopItemUseCase.editShopItem(item)
                     finishWork()
@@ -112,10 +107,5 @@ class ShopItemViewModel(application: Application) : AndroidViewModel(application
 
     private fun finishWork() {
         _closeScreen.value = Unit
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        scope.cancel()
     }
 }
