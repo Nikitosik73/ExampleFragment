@@ -16,16 +16,21 @@ class ShopItemRepositoryImpl(
     private val shopListDao = AppDatabase.getInstance(application).shopListDao()
     private val mapper = ShopListMapper()
 
-    override fun addShopItem(shopItem: ShopItem) {
+    override suspend fun addShopItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.mapShopItemEntityToDbModel(shopItem))
     }
 
-    override fun editShopItem(shopItem: ShopItem) {
+    override suspend fun editShopItem(shopItem: ShopItem) {
         shopListDao.addShopItem(mapper.mapShopItemEntityToDbModel(shopItem))
     }
 
-    override fun removeSHopItem(shopItem: ShopItem) {
+    override suspend fun removeSHopItem(shopItem: ShopItem) {
         shopListDao.removeSHopItem(shopItem.id)
+    }
+
+    override suspend fun getShopItem(shopItemId: Int): ShopItem {
+        val dbModel = shopListDao.getShopItem(shopItemId)
+        return mapper.mapShopItemDbModelToEntity(dbModel)
     }
 
     // первый способ преоборазования одной liveData в другую
@@ -42,10 +47,5 @@ class ShopItemRepositoryImpl(
                 value = mapper.mapShopListDbModelToEntity(shopItemDbModels)
             }
         }
-    }
-
-    override fun getShopItem(shopItemId: Int): ShopItem {
-        val dbModel = shopListDao.getShopItem(shopItemId)
-        return mapper.mapShopItemDbModelToEntity(dbModel)
     }
 }
