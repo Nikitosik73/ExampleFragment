@@ -2,8 +2,9 @@ package com.example.myshoppinglist.data.mapper
 
 import com.example.myshoppinglist.data.database.ShopItemDbModel
 import com.example.myshoppinglist.domain.ShopItem
+import javax.inject.Inject
 
-class ShopListMapper {
+class ShopListMapper @Inject constructor() {
 
     fun mapShopItemEntityToDbModel(shopItem: ShopItem) = ShopItemDbModel(
         id = shopItem.id,

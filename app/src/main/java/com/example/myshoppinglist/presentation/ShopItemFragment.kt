@@ -11,17 +11,27 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myshoppinglist.R
+import com.example.myshoppinglist.app.ShopItemApp
 import com.example.myshoppinglist.databinding.FragmentShopItemBinding
 import com.example.myshoppinglist.domain.ShopItem
 import com.example.myshoppinglist.presentation.viewmodel.ShopItemViewModel
+import com.example.myshoppinglist.presentation.viewmodelfactory.ViewModelFactory
+import javax.inject.Inject
 
 class ShopItemFragment : Fragment() {
 
     private var _binding: FragmentShopItemBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[ShopItemViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ShopItemViewModel::class.java]
+    }
+
+    private val component by lazy {
+        (requireActivity().application as ShopItemApp).component
     }
 
     private var screenMode: String = MODE_UNKNOWN
@@ -30,6 +40,7 @@ class ShopItemFragment : Fragment() {
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
     override fun onAttach(context: Context) {
+        component.inject(this)
         Log.d("ShopItemFragment", "onAttach")
         super.onAttach(context)
         if (context is OnEditingFinishedListener) {

@@ -36,6 +36,7 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopListViewHolder>(
             false
         )
         return ShopListViewHolder(binding)
+
     }
 
     override fun onBindViewHolder(holder: ShopListViewHolder, position: Int) {
@@ -43,7 +44,7 @@ class ShopListAdapter : ListAdapter<ShopItem, ShopListViewHolder>(
         val shopItemAd = getItem(position)
         val binding = holder.binding
         with(binding) {
-            when(this) {
+            when (this) {
                 is ShopItemDisabledBinding -> {
                     shopItem = shopItemAd
                 }
