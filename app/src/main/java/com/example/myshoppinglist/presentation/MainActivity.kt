@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myshoppinglist.R
 import com.example.myshoppinglist.app.ShopItemApp
 import com.example.myshoppinglist.databinding.ActivityMainBinding
+import com.example.myshoppinglist.domain.ShopItem
 import com.example.myshoppinglist.presentation.adapter.ShopListAdapter
 import com.example.myshoppinglist.presentation.viewmodel.MainViewModel
 import com.example.myshoppinglist.presentation.viewmodelfactory.ViewModelFactory
+import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedListener {
 
@@ -53,14 +56,30 @@ class MainActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinishedList
                 launchScreenMode(ShopItemFragment.newInstanceAddItem())
             }
         }
-        contentResolver.query(
-            Uri.parse("content://com.example.myshoppinglist/shop_items/3"),
-            null,
-            null,
-            null,
-            null,
-            null,
-        )
+        thread {
+            val cursor = contentResolver.query(
+                Uri.parse("content://com.example.myshoppinglist/shop_items"),
+                null,
+                null,
+                null,
+                null,
+                null,
+            )
+            while (cursor?.moveToNext() == true) {
+                val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+                val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                val count = cursor.getInt(cursor.getColumnIndexOrThrow("count"))
+                val enabled = cursor.getInt(cursor.getColumnIndexOrThrow("enabled")) > 0
+                val item = ShopItem(
+                    id = id,
+                    name = name,
+                    count = count,
+                    enabled = enabled
+                )
+                Log.d("item", item.toString())
+            }
+            cursor?.close()
+        }
     }
 
     override fun onEditingFinished() {
