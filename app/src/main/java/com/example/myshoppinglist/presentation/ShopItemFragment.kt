@@ -1,6 +1,8 @@
 package com.example.myshoppinglist.presentation
 
+import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,6 +19,7 @@ import com.example.myshoppinglist.domain.ShopItem
 import com.example.myshoppinglist.presentation.viewmodel.ShopItemViewModel
 import com.example.myshoppinglist.presentation.viewmodelfactory.ViewModelFactory
 import javax.inject.Inject
+import kotlin.concurrent.thread
 
 class ShopItemFragment : Fragment() {
 
@@ -131,10 +134,22 @@ class ShopItemFragment : Fragment() {
 
     private fun launchAddMode() {
         binding.buttonSave.setOnClickListener {
-            viewModel.addShopItem(
-                binding.editName.text?.toString(),
-                binding.editCount.text?.toString()
-            )
+//            viewModel.addShopItem(
+//                binding.editName.text?.toString(),
+//                binding.editCount.text?.toString()
+//            )
+            thread {
+                context?.contentResolver?.insert(
+                    Uri.parse("content://com.example.myshoppinglist/shop_items"),
+                    ContentValues().apply {
+                        put("id", 0)
+                        put("name", binding.editName.text.toString())
+                        put("count", binding.editCount.text.toString().toInt())
+                        put("enabled", true)
+                    }
+                )
+            }
+            requireActivity().finish()
         }
     }
 

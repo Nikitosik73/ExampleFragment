@@ -22,8 +22,14 @@ interface DataModule {
 
         @Provides
         @ApplicationScope
-        fun provideShopList(
+        fun provideDatabase(
             application: Application
-        ): ShopListDao = AppDatabase.getInstance(application).shopListDao()
+        ): AppDatabase = AppDatabase.getInstance(application)
+
+        @Provides
+        @ApplicationScope
+        fun provideDao(
+            database: AppDatabase
+        ): ShopListDao = database.shopListDao()
     }
 }
