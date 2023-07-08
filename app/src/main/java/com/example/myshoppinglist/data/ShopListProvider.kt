@@ -8,6 +8,8 @@ import android.net.Uri
 import android.util.Log
 import com.example.myshoppinglist.app.ShopItemApp
 import com.example.myshoppinglist.data.database.ShopListDao
+import com.example.myshoppinglist.data.mapper.ShopListMapper
+import com.example.myshoppinglist.domain.ShopItem
 import javax.inject.Inject
 
 class ShopListProvider : ContentProvider() {
@@ -18,6 +20,9 @@ class ShopListProvider : ContentProvider() {
 
     @Inject
     lateinit var shopDao: ShopListDao
+
+    @Inject
+    lateinit var mapper: ShopListMapper
 
     private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
         addURI("com.example.myshoppinglist", "shop_items", GET_SHOP_ITEMS_QUERY)
@@ -49,7 +54,25 @@ class ShopListProvider : ContentProvider() {
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        TODO("Not yet implemented")
+        when(uriMatcher.match(uri)) {
+            GET_SHOP_ITEMS_QUERY -> {
+                values?.let {
+                    val id = values.getAsInteger("id")
+                    val name = values.getAsString("name")
+                    val count = values.getAsInteger("count")
+                    val enabled = values.getAsBoolean("enabled")
+                    val item = ShopItem(
+                        id = id,
+                        name = name,
+                        count = count,
+                        enabled = enabled
+                    )
+                    val itemDb = mapper.mapShopItemEntityToDbModel(item)
+                    shopDao.addShopItemSync(itemDb)
+                }
+            }
+        }
+        return null
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?): Int {
