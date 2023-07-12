@@ -71,17 +71,15 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
         private const val EXTRA_EDIT_MODE = "edit_mode"
         private const val MODE_UNKNOWN = ""
 
-        fun newIntentAddMode(context: Context): Intent {
-            val intent = Intent(context, ShopItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, EXTRA_ADD_MODE)
-            return intent
-        }
+        fun newIntentAddMode(context: Context) =
+            Intent(context, ShopItemActivity::class.java).apply {
+                putExtra(EXTRA_SCREEN_MODE, EXTRA_ADD_MODE)
+            }
 
-        fun newIntentEditMode(context: Context, shopItemId: Int): Intent {
-            val intent = Intent(context, ShopItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, EXTRA_EDIT_MODE)
-            intent.putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
-            return intent
-        }
+        fun newIntentEditMode(context: Context, shopItemId: Int) =
+            Intent(context, ShopItemActivity::class.java).apply {
+                putExtra(EXTRA_SCREEN_MODE, EXTRA_EDIT_MODE)
+                putExtra(EXTRA_SHOP_ITEM_ID, shopItemId)
+            }
     }
 }

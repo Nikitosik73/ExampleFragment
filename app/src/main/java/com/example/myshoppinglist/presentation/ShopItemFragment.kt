@@ -125,10 +125,22 @@ class ShopItemFragment : Fragment() {
     private fun launchEditMode() {
         viewModel.getShopItem(shopItemId)
         binding.buttonSave.setOnClickListener {
-            viewModel.editShopItem(
-                binding.editName.text?.toString(),
-                binding.editCount.text?.toString()
-            )
+//            viewModel.editShopItem(
+//                binding.editName.text?.toString(),
+//                binding.editCount.text?.toString()
+//            )
+            thread {
+                context?.contentResolver?.update(
+                    Uri.parse("content://com.example.myshoppinglist/shop_items"),
+                    ContentValues().apply {
+                        put("name", binding.editName.text?.toString())
+                        put("count", binding.editCount.text?.toString()?.toInt())
+                    },
+                    null,
+                    arrayOf(shopItemId.toString())
+                )
+            }
+            requireActivity().finish()
         }
     }
 

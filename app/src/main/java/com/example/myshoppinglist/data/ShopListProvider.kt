@@ -91,7 +91,19 @@ class ShopListProvider : ContentProvider() {
         selection: String?,
         selectionArgs: Array<out String>?
     ): Int {
-        TODO("Not yet implemented")
+        when(uriMatcher.match(uri)) {
+            GET_SHOP_ITEMS_QUERY -> {
+                val itemId = selectionArgs?.get(0)?.toInt() ?: -1
+                val item = shopDao.getShopItemSync(itemId)
+                values?.let {
+                    val name = values.getAsString("name")
+                    val count = values.getAsInteger("count")
+                    val updateItem = item.copy(name = name, count = count)
+                    shopDao.addShopItemSync(updateItem)
+                }
+            }
+        }
+        return 0
     }
 
     companion object {

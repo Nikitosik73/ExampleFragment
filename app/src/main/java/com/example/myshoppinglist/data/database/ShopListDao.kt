@@ -30,4 +30,7 @@ interface ShopListDao {
 
     @Query("select * from shop_items where id=:shopItemId limit 1")
     suspend fun getShopItem(shopItemId: Int): ShopItemDbModel
+
+    @Query("select * from shop_items where id=:shopItemId limit 1")
+    fun getShopItemSync(shopItemId: Int): ShopItemDbModel
 }
